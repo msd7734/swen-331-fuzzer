@@ -16,6 +16,7 @@ public class Fuzzer {
 	public Fuzzer(String rootUrl, List<String> commonWords)
 	{
 		this.visitedUrls = new ArrayList<String>();
+		this.visitedUrls.add(rootUrl);
 		this.visitedDirs = new ArrayList<String>();
 		this.rootUrl = rootUrl;
 		this.commonWords = commonWords;
@@ -27,6 +28,7 @@ public class Fuzzer {
 	 */
 	public void discover()
 	{
+		
 		return;
 	}
 	
@@ -39,7 +41,7 @@ public class Fuzzer {
 	 * @param authStr FuzzerAuthString containing username and/or password
 	 * 
 	 */
-	public void SetCustomAuthString(FuzzerAuthString authStr)
+	public void setCustomAuthString(FuzzerAuthString authStr)
 	{
 		this.authStr = authStr;
 	}
@@ -48,7 +50,22 @@ public class Fuzzer {
 	 * Helper Methods
 	 */
 
-	private static boolean UrlStrictCompare(String u1, String u2)
+	//Convert our string representations into URLs for utility's sake
+	//Encapsulating it like this avoids a ton of try/catch blocks 
+	private static URL getURL(String str)
+	{
+		try {
+			URL res = new URL(str);
+			return res;
+		}
+		catch (MalformedURLException murle) {
+			System.err.println(str +
+					" was attempted to be treated as a URL, but was malformed.");
+			return null;
+		}
+	}
+	
+	private static boolean urlStrictCompare(String u1, String u2)
 	{
 		try {
 			URL url1 = new URL(u1);
