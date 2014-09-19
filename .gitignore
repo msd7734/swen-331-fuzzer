@@ -13,3 +13,6 @@ hs_err_pid*
 
 # Eclipse config
 .settings
+
+# Include libraries (mainly HTMLUnit .jar files)
+!swen-331-fuzzer/lib/*
