@@ -1,6 +1,10 @@
 import java.util.*;
 import java.net.*;
+import java.io.IOException;
+
 import com.gargoylesoftware.htmlunit.*;
+import com.gargoylesoftware.htmlunit.CookieManager;
+import com.gargoylesoftware.htmlunit.html.*;
 
 //Matt: Remember to pass enum string value to report instead of enum itself
 //		when reporting whether a page was accessed via crawl, guess, etc.
@@ -15,22 +19,35 @@ public class Fuzzer {
 	private List<String> commonWords;
 	private FuzzerAuthString authStr;
 	
+	private final WebClient webClient;
+	private final CookieManager cookieManager;
+	
 	
 	public Fuzzer(String rootUrl, List<String> commonWords)
 	{
 		this.visitedUrls = new ArrayList<String>();
 		this.visitedUrls.add(rootUrl);
 		this.visitedPaths = new ArrayList<String>();
+		this.visitedPaths.add(getURL(rootUrl).getPath());
 		this.rootUrl = rootUrl;
 		this.commonWords = commonWords;
 		this.authStr = null;
+		
+		webClient = new WebClient();
+		cookieManager = webClient.getCookieManager();
+		cookieManager.setCookiesEnabled(true);
 	}
 	
 	/**
-	 * Crawl and guess to access web pages.
+	 * Crawl and guess to access and catalog web pages.
 	 */
-	public void discover()
+	public void discover() throws MalformedURLException,IOException
 	{
+		final HtmlPage rootPg = webClient.getPage(this.rootUrl);
+		
+		List<HtmlAnchor> anchors = rootPg.getAnchors();
+		List<HtmlForm> forms = rootPg.getForms();
+		DomNodeList<DomElement> inputs = rootPg.getElementsByTagName("input");
 		
 		return;
 	}
