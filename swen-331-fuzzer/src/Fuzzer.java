@@ -13,13 +13,13 @@ public class Fuzzer {
 	private FuzzerAuthString authStr;
 	
 	
-	public Fuzzer(String rootUrl, List<String> commonWords, FuzzerAuthString authStr)
+	public Fuzzer(String rootUrl, List<String> commonWords)
 	{
 		this.visitedUrls = new ArrayList<String>();
 		this.visitedDirs = new ArrayList<String>();
 		this.rootUrl = rootUrl;
 		this.commonWords = commonWords;
-		this.authStr = authStr;
+		this.authStr = null;
 	}
 	
 	/**
@@ -28,6 +28,20 @@ public class Fuzzer {
 	public void discover()
 	{
 		return;
+	}
+	
+	/*
+	 * Accessors and Modifiers
+	 */
+	
+	/**
+	 * Attempt to employ custom credentials at root URL.
+	 * @param authStr FuzzerAuthString containing username and/or password
+	 * 
+	 */
+	public void SetCustomAuthString(FuzzerAuthString authStr)
+	{
+		this.authStr = authStr;
 	}
 	
 	/*
