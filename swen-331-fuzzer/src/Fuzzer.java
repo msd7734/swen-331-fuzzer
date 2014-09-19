@@ -22,12 +22,20 @@ public class Fuzzer {
 		this.authStr = authStr;
 	}
 	
+	/**
+	 * Crawl and guess to access web pages.
+	 */
+	public void discover()
+	{
+		return;
+	}
+	
 	/*
 	 * Helper Methods
 	 */
 
-	
-	private static boolean UrlStrictCompare(String u1, String u2) {
+	private static boolean UrlStrictCompare(String u1, String u2)
+	{
 		try {
 			URL url1 = new URL(u1);
 			URL url2 = new URL(u2);
