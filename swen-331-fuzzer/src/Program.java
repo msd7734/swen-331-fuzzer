@@ -8,14 +8,37 @@ public class Program {
 	 */
 	public static void main(String[] args)
 	{	
+		int custAuth = 0;
+		int comWords = 0;
+		int vec = 0;
+		int sens = 0;
+		int rand = 0;
+		int slow = 0;
 		
-		if(args[0].contains("--custom-auth="))
+		int index = 0;
+		for(String s : args)
+		{
+			if(s.contains("--custom-auth=")){
+				custAuth = index;	
+			}else if(s.contains("--common-words=")){
+				comWords = index;
+			}else if(s.contains("--vectors=")){
+				vec = index;
+			}else if(s.contains("--sensitive=")){
+				sens = index;
+			}else if(s.contains("--random=")){
+				rand = index;
+			}else if(s.contains("--slow=")){
+				slow = index;
+			}
+			++index;
+		}
+		
+		if(args[custAuth].contains("--custom-auth="))
 		{	
 			FuzzerAuthString authString = new FuzzerAuthString();
-			String auth = args[0].substring(14, args[0].length());
-			System.out.println(auth);
+			String auth = args[custAuth].substring(14, args[0].length());
 			String[] cred = auth.split(" ");
-			System.out.println(cred.length);
 			if(cred.length == 1)
 			{
 				if(cred[0].contains("u=")){
@@ -39,8 +62,6 @@ public class Program {
 					}
 				}
 			}
-			
-			
 		}
 	}
 }
