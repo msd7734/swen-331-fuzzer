@@ -1,12 +1,20 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+
+
 
 
 public class Program {
 
 	/**
 	 * @param args
+	 * @throws IOException 
 	 */
-	public static void main(String[] args)
+	public static void main(String[] args) throws IOException
 	{	
 		int custAuth = 0;
 		int comWords = 0;
@@ -37,7 +45,7 @@ public class Program {
 		if(args[custAuth].contains("--custom-auth="))
 		{	
 			FuzzerAuthString authString = new FuzzerAuthString();
-			String auth = args[custAuth].substring(14, args[0].length());
+			String auth = args[custAuth].substring(14, args[custAuth].length());
 			String[] cred = auth.split(" ");
 			if(cred.length == 1)
 			{
@@ -63,5 +71,18 @@ public class Program {
 				}
 			}
 		}
+		
+		if(args[comWords].contains("--common-words=")){
+			String filePath = args[comWords].substring(15);
+			List<String> commonWords = new ArrayList<String>();
+			
+			BufferedReader reader = new BufferedReader(new FileReader(filePath));
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				commonWords.add(line);
+			}
+			
+		}
+		
 	}
 }
