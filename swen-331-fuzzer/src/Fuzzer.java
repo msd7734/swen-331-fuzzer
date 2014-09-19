@@ -2,10 +2,13 @@ import java.util.*;
 import java.net.*;
 import com.gargoylesoftware.htmlunit.*;
 
+//Matt: Remember to pass enum string value to report instead of enum itself
+//		when reporting whether a page was accessed via crawl, guess, etc.
+
 public class Fuzzer {
 	//For these kinds of list, some other object may be used later if convenient
 	private List<String> visitedUrls;
-	private List<String> visitedDirs;
+	private List<String> visitedPaths;
 	private List<String> knownCookies; 
 	
 	private String rootUrl;
@@ -17,7 +20,7 @@ public class Fuzzer {
 	{
 		this.visitedUrls = new ArrayList<String>();
 		this.visitedUrls.add(rootUrl);
-		this.visitedDirs = new ArrayList<String>();
+		this.visitedPaths = new ArrayList<String>();
 		this.rootUrl = rootUrl;
 		this.commonWords = commonWords;
 		this.authStr = null;
