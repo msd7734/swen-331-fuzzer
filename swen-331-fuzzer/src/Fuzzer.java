@@ -28,13 +28,12 @@ public class Fuzzer {
 
 	
 	private static boolean UrlStrictCompare(String u1, String u2) {
-		String trunc1, trunc2;
 		try {
 			URL url1 = new URL(u1);
 			URL url2 = new URL(u2);
-			String ustr1 = url1.getProtocol() + "://" + url1.getHost() + url1.getPath();
-			String ustr2 = url2.getProtocol() + "://" + url2.getHost() + url2.getPath();
-			return (ustr1.equals(ustr2));
+			String trunc1 = url1.getProtocol() + "://" + url1.getHost() + url1.getPath();
+			String trunc2 = url2.getProtocol() + "://" + url2.getHost() + url2.getPath();
+			return (trunc1.equals(trunc2));
 		}
 		catch (MalformedURLException murle) {
 			System.err.println("Attempted to compare invalid URL:\n" + murle.getMessage());
