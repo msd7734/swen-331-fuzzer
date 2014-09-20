@@ -1,5 +1,7 @@
+package swen.fuzzer.report;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
@@ -21,13 +23,13 @@ public class Report {
 	public void addPageFound(HtmlPage page, String type)
 	{
 		Page p = new Page(page.getUrl().toString(), type);
-		for (Page reportContent : pages) {
+		for (Page reportContent : this.pages) {
 			if(reportContent.getURL().equals(p.getURL()))
 			{
 				throw new RuntimeException("You tried to pass the same URL twice to the report");
 			}
 		}
-		pages.add(p);
+		this.pages.add(p);
 	}
 	
 	/**
@@ -68,7 +70,7 @@ public class Report {
 	 * @param URL: string cointaing URL page
 	 * @param cookies: list of found cookies 
 	 */
-	public void setPageCookies(String URL, List<Cookie> cookies){
+	public void setPageCookies(String URL, Set<Cookie> cookies){
 		Page page = getPageByURL(URL);
 		if(page == null)
 		{
@@ -81,10 +83,10 @@ public class Report {
 	}
 	
 
-	private Page getPageByURL(String URL){
+	public Page getPageByURL(String URL){
 		Page page = null;
-		for (Page reportContent : pages) {
-			if(reportContent.getURL() == URL){
+		for (Page reportContent : this.pages) {
+			if(reportContent.getURL().equals(URL)){
 				page = reportContent;
 				break;
 			}

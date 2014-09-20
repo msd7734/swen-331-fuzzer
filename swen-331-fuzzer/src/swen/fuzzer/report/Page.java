@@ -1,5 +1,8 @@
+package swen.fuzzer.report;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
@@ -12,7 +15,7 @@ public class Page {
 	private final String type;
 	private List<HtmlForm> forms = new ArrayList<HtmlForm>();
 	private List<HtmlInput> inputs = new ArrayList<HtmlInput>();
-	private List<Cookie> cookies = new ArrayList<Cookie>();
+	private Set<Cookie> cookies = new HashSet<Cookie>();
 	
 	public Page(String url, String type) {
 		this.URL = url;
@@ -35,11 +38,11 @@ public class Page {
 		this.inputs = inputs;
 	}
 
-	public List<Cookie> getCookies() {
+	public Set<Cookie> getCookies() {
 		return cookies;
 	}
 
-	public void setCookies(List<Cookie> cookies) {
+	public void setCookies(Set<Cookie> cookies) {
 		this.cookies = cookies;
 	}
 
