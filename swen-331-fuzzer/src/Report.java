@@ -1,14 +1,6 @@
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.management.RuntimeErrorException;
-
-import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.DomElement;
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -38,34 +30,11 @@ public class Report {
 		pages.add(p);
 	}
 	
-	public void test()
-	{
-		WebClient wc = new WebClient();
-		try {
-			HtmlPage page = wc.getPage("http://www.google.com.br");
-			
-			List<HtmlAnchor> links =  page.getAnchors();
-			List<HtmlForm>  forms =  page.getForms();
-			List<DomElement> inputs = page.getElementsByTagName("input");
-			
-			for(DomElement htmlInput : inputs){
-					HtmlInput test = (HtmlInput)htmlInput;
-					System.out.println(test.getNameAttribute() + "  " + test.getTypeAttribute() + " " + test.asText());
-			}
-			
-		} catch (FailingHttpStatusCodeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
-	
+	/**
+	 * 
+	 * @param URL: string containing URL page
+	 * @param forms: list of found forms
+	 */
 	public void setPageForm(String URL, List<HtmlForm> forms){
 		Page page = getPageByURL(URL);
 		if(page == null)
@@ -78,6 +47,10 @@ public class Report {
 		}
 	}
 	
+	/**
+	 * @param URL: string containing URL page
+	 * @param inputs: list of found inputs 
+	 */
 	public void setPageInput(String URL, List<HtmlInput> inputs){
 		Page page = getPageByURL(URL);
 		if(page == null)
@@ -90,6 +63,11 @@ public class Report {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param URL: string cointaing URL page
+	 * @param cookies: list of found cookies 
+	 */
 	public void setPageCookies(String URL, List<Cookie> cookies){
 		Page page = getPageByURL(URL);
 		if(page == null)
