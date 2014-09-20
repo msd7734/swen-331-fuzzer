@@ -9,12 +9,14 @@ import com.gargoylesoftware.htmlunit.util.Cookie;
 public class Page {
 
 	private final String URL;
+	private final String type;
 	private List<HtmlForm> forms = new ArrayList<HtmlForm>();
 	private List<HtmlInput> inputs = new ArrayList<HtmlInput>();
 	private List<Cookie> cookies = new ArrayList<Cookie>();
 	
-	public Page(String url) {
+	public Page(String url, String type) {
 		this.URL = url;
+		this.type = type;
 	}
 
 	public List<HtmlForm> getForms() {
@@ -43,6 +45,10 @@ public class Page {
 
 	public String getURL() {
 		return URL;
+	}
+
+	public String getType() {
+		return type;
 	}
 	
 	
