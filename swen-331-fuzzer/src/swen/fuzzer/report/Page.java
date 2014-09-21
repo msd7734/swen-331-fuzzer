@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.util.Cookie;
@@ -15,6 +16,7 @@ public class Page {
 	private final String type;
 	private List<HtmlForm> forms = new ArrayList<HtmlForm>();
 	private List<HtmlInput> inputs = new ArrayList<HtmlInput>();
+	private List<HtmlAnchor> links= new ArrayList<HtmlAnchor>();
 	private Set<Cookie> actualCookies = new HashSet<Cookie>();
 	private Set<Cookie> oldCookies = new HashSet<Cookie>();
 	
@@ -49,6 +51,14 @@ public class Page {
 
 	public String getType() {
 		return type;
+	}
+	
+	public List<HtmlAnchor> getLinks() {
+		return links;
+	}
+
+	public void setLinks(List<HtmlAnchor> links) {
+		this.links = links;
 	}
 
 	public void setCookies(Set<Cookie> cookies) {

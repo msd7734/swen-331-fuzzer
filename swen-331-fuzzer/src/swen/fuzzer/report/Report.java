@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -37,7 +38,7 @@ public class Report {
 	 * @param URL: string containing URL page
 	 * @param forms: list of found forms
 	 */
-	public void setPageForm(String URL, List<HtmlForm> forms){
+	public void setPageForms(String URL, List<HtmlForm> forms){
 		Page page = getPageByURL(URL);
 		if(page == null)
 		{
@@ -49,11 +50,30 @@ public class Report {
 		}
 	}
 	
+	
+	/**
+	 * 
+	 * @param URL: string containing URL page
+	 * @param links: list of found links
+	 */
+	public void setPageLinks(String URL, List<HtmlAnchor> links){
+		Page page = getPageByURL(URL);
+		if(page == null)
+		{
+			throw new RuntimeException("There is no page with this URL in the report");
+		}
+		else
+		{
+			page.setLinks(links);
+		}
+	}
+	
+	
 	/**
 	 * @param URL: string containing URL page
 	 * @param inputs: list of found inputs 
 	 */
-	public void setPageInput(String URL, List<HtmlInput> inputs){
+	public void setPageInputs(String URL, List<HtmlInput> inputs){
 		Page page = getPageByURL(URL);
 		if(page == null)
 		{
@@ -96,7 +116,48 @@ public class Report {
 	
 	public void show()
 	{
+		printStats();
 		
+		for (Page page : pages) {
+			System.out.printf("%s (%s)",page.getURL(),page.getType());
+			printForms(page);
+		}
 	}
 	
+	private void printStats()
+	{
+		Integer numberGuessed = 0;
+		Integer numberCrawled = 0;
+		Integer numberLinks = 0;
+		Integer numberForms = 0;
+		Integer numberInputs = 0;
+		Integer numberCookies = 0;
+		
+		for (Page page : pages) {
+			if(page.getType().equalsIgnoreCase("guessed"))
+				numberGuessed++;
+			else
+				numberCrawled++;
+			numberLinks += page.getLinks().size();
+			numberForms += page.getForms().size();
+			numberInputs += page.getInputs().size();
+			numberCookies += page.getCookies().size();
+		}
+		
+		System.out.printf("Crawled %d pages \n",numberCrawled);
+		System.out.printf("Found %d links \n",numberLinks);
+		System.out.printf("Found %d forms \n",numberForms);
+		System.out.printf("Found %d inputs \n",numberInputs);
+		System.out.printf("Found %d cookies \n",numberCookies);
+		System.out.printf("Successfully guessed %d urls \n",numberGuessed);
+	}
+	
+	private void printForms(Page page)
+	{
+		List<HtmlForm> formList = page.getForms();
+		
+		for (HtmlForm htmlForm : formList) {
+			System.out.printf("- Form \" %s \" ",htmlForm.getNameAttribute());
+		}
+	}
 }

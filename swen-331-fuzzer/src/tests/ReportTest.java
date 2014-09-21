@@ -63,14 +63,14 @@ public class ReportTest {
 	@Test
 	public void testSetForms(){
 		this.r.addPageFound(page, "guessed");
-		this.r.setPageForm(page.getUrl().toString(), forms);
+		this.r.setPageForms(page.getUrl().toString(), forms);
 		assertTrue(r.getPageByURL(page.getUrl().toString()).getForms().size() > 0);
 	}
 	
 	@Test
 	public void testSetInputs(){
 		this.r.addPageFound(page, "guessed");
-		this.r.setPageInput(page.getUrl().toString(), inputs);
+		this.r.setPageInputs(page.getUrl().toString(), inputs);
 		assertTrue(r.getPageByURL(page.getUrl().toString()).getInputs().size() > 0);
 	}
 	
@@ -82,8 +82,20 @@ public class ReportTest {
 	}
 	
 	@Test
+	public void testSetLinks(){
+		this.r.addPageFound(page, "guessed");
+		this.r.setPageLinks(page.getUrl().toString(), links);
+		assertTrue(r.getPageByURL(page.getUrl().toString()).getLinks().size() > 0);
+	}
+	
+	@Test
 	public void testShow() {
-		fail("Not yet implemented");
+		this.r.addPageFound(page, "guessed");
+		this.r.setPageForms(page.getUrl().toString(), forms);
+		this.r.setPageInputs(page.getUrl().toString(), inputs);
+		this.r.setPageLinks(page.getUrl().toString(), links);
+		this.r.setPageCookies(page.getUrl().toString(), cookies);
+		r.show();
 	}
 
 }
