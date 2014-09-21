@@ -117,10 +117,15 @@ public class Report {
 	public void show()
 	{
 		printStats();
+		System.out.println();
 		
 		for (Page page : pages) {
-			System.out.printf("%s (%s)",page.getURL(),page.getType());
+			System.out.printf("%s (%s)\n",page.getURL(),page.getType());
 			printForms(page);
+			printLinks(page);
+			printInputs(page);
+			//printCookies(page);
+			System.out.println();
 		}
 	}
 	
@@ -157,7 +162,30 @@ public class Report {
 		List<HtmlForm> formList = page.getForms();
 		
 		for (HtmlForm htmlForm : formList) {
-			System.out.printf("- Form \" %s \" ",htmlForm.getNameAttribute());
+			System.out.printf("- Form \" %s \" \n",htmlForm.getNameAttribute());
 		}
+	}
+	
+	private void printLinks(Page page)
+	{
+		List<HtmlAnchor> anchorList = page.getLinks();
+		
+		for (HtmlAnchor htmlAnchor : anchorList) {
+			System.out.printf("- Link \" %s \" \n",htmlAnchor.getHrefAttribute());
+		}
+	}
+	
+	private void printInputs(Page page)
+	{
+		List<HtmlInput> inputList = page.getInputs();
+		
+		for (HtmlInput htmlInput : inputList) {
+			System.out.printf("- %s input \" %s \" \n",htmlInput.getTypeAttribute(), htmlInput.getNameAttribute());
+		}
+	}
+	
+	private void printCookies(Page page)
+	{
+		//List<Cookie> cookieList = page.ge
 	}
 }
