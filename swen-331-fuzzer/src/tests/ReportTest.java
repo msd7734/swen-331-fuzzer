@@ -78,7 +78,7 @@ public class ReportTest {
 	public void testSetCookies(){
 		this.r.addPageFound(page, "guessed");
 		this.r.setPageCookies(page.getUrl().toString(), cookies);
-		assertTrue(r.getPageByURL(page.getUrl().toString()).getCookies().size() > 0);
+		assertTrue(r.getPageByURL(page.getUrl().toString()).getActualCookies().size() > 0);
 	}
 	
 	@Test

@@ -40,10 +40,6 @@ public class Page {
 	public void setInputs(List<HtmlInput> inputs) {
 		this.inputs = inputs;
 	}
-
-	public Set<Cookie> getCookies() {
-		return actualCookies;
-	}
 	
 	public String getURL() {
 		return URL;
@@ -59,6 +55,14 @@ public class Page {
 
 	public void setLinks(List<HtmlAnchor> links) {
 		this.links = links;
+	}
+	
+	public Set<Cookie> getActualCookies() {
+		return actualCookies;
+	}
+
+	public Set<Cookie> getOldCookies() {
+		return oldCookies;
 	}
 
 	public void setCookies(Set<Cookie> cookies) {
@@ -84,7 +88,7 @@ public class Page {
 		oldCookies.add(cookie);
 	}
 	
-	private Cookie containsCookie(Cookie c, Set<Cookie> cookies)
+	public Cookie containsCookie(Cookie c, Set<Cookie> cookies)
 	{
 		Cookie result = null;
 		for (Cookie cookie : cookies) {

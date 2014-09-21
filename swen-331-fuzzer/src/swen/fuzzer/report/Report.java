@@ -124,7 +124,7 @@ public class Report {
 			printForms(page);
 			printLinks(page);
 			printInputs(page);
-			//printCookies(page);
+			printCookies(page);
 			System.out.println();
 		}
 	}
@@ -146,7 +146,7 @@ public class Report {
 			numberLinks += page.getLinks().size();
 			numberForms += page.getForms().size();
 			numberInputs += page.getInputs().size();
-			numberCookies += page.getCookies().size();
+			numberCookies += page.getActualCookies().size();
 		}
 		
 		System.out.printf("Crawled %d pages \n",numberCrawled);
@@ -186,6 +186,14 @@ public class Report {
 	
 	private void printCookies(Page page)
 	{
-		//List<Cookie> cookieList = page.ge
+		Set<Cookie> actualCookies = page.getActualCookies();
+		Set<Cookie> oldCookies = page.getOldCookies();
+		for (Cookie cookie : actualCookies) {
+			Cookie c = page.containsCookie(cookie, oldCookies);
+			if(c != null)
+				System.out.printf("- Cookie %s changed its value from \"%s\" to \"%s\" \n",cookie.getName(), c.getValue(), cookie.getValue());
+			else
+				System.out.printf("- Cookie %s was created with value \"%s\" \n",cookie.getName(),cookie.getValue());
+		}
 	}
 }
