@@ -72,12 +72,7 @@ public class Fuzzer {
 		//Report the root page
 		reportPage(rootPg, PageDiscoveryMethod.Root);
 		
-		//Since we only need the info for the report, most of this isn't currently needed
-		//I'm keeping it in though, we'll need it (I think) for the Test command later
 		List<HtmlAnchor> anchors = rootPg.getAnchors();
-		List<HtmlForm> forms = rootPg.getForms();
-		DomNodeList<DomElement> inputs = rootPg.getElementsByTagName("input");
-		Set<Cookie> cookies  = cookieManager.getCookies();
 		
 		//TODO: Add authentication handling for Bodgeit and DVWA
 		switch(this.targetSite)
