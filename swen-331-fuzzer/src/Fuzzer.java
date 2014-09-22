@@ -69,7 +69,8 @@ public class Fuzzer {
 		if (rootPg.getWebResponse().getStatusCode() != 200)
 			throw new FailingHttpStatusCodeException(rootPg.getWebResponse());
 		
-		this.report.addPageFound(rootPg, PageDiscoveryMethod.Root.getPrintedName());
+		//Report the root page
+		reportPage(rootPg, PageDiscoveryMethod.Root);
 		
 		//Since we only need the info for the report, most of this isn't currently needed
 		//I'm keeping it in though, we'll need it (I think) for the Test command later
@@ -93,6 +94,9 @@ public class Fuzzer {
 				crawl(guess, PageDiscoveryMethod.Guessed);
 			break;
 		}
+		
+		//after fully crawling, print the final report result
+		this.report.show();
 	}
 	
 	private void crawl(String url, PageDiscoveryMethod method) throws MalformedURLException,IOException
@@ -118,7 +122,8 @@ public class Fuzzer {
 			
 		}
 		
-		this.report.addPageFound(pg, method.getPrintedName());
+		//report result
+		reportPage(pg, method);
 		
 		List<HtmlAnchor> anchors = pg.getAnchors();
 		
@@ -145,6 +150,24 @@ public class Fuzzer {
 	/*
 	 * Helper Methods
 	 */
+	
+	private void reportPage(HtmlPage pg, PageDiscoveryMethod method)
+	{
+		this.report.addPageFound(pg, method.getPrintedName());
+		String url = pg.getUrl().toString();
+		
+		this.report.setPageLinks(url, pg.getAnchors());
+		this.report.setPageForms(url,  pg.getForms());
+		
+		List<DomElement> domInputs = pg.getElementsByTagName("input");
+		List<HtmlInput> inputs = new ArrayList<HtmlInput>(domInputs.size());
+		
+		for (DomElement i : domInputs)
+			inputs.add((HtmlInput) i);
+		
+		this.report.setPageInputs(url, inputs);
+		this.report.setPageCookies(url, cookieManager.getCookies());
+	}
 	
 	private List<String> getGuessList()
 	{
