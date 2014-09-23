@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.net.*;
 
 
 
@@ -17,6 +18,29 @@ public class Program {
 	 */
 	public static void main(String[] args) throws IOException
 	{	
+		if (args.length < 3)
+		{
+			System.err.print("Usage: fuzz [discover | test] url OPTIONS\n" +
+					"\tWhere discover requires the --common-words option and test "+
+					"requires all discover options and the --vectors and --sensitive options.");
+			return;
+		}
+		else if (!(args[0].equals("discover") || args[0].equals("test")))
+		{
+			System.err.println("Usage: fuzz [discover | test] url OPTIONS");
+			return;
+		}
+		else
+		{
+			try {
+				URL url = new URL(args[1]);
+			}
+			catch (MalformedURLException murle) {
+				System.err.println(args[1] + " is not a valid URL.");
+				return;
+			}
+		}
+		
 		int custAuth = 0;
 		int comWords = 0;
 		int vec = 0;
@@ -101,6 +125,16 @@ public class Program {
 		}
 		
 		String url = args[1];
+		
+		//Args debug block
+		/*
+		System.out.println("Debug: Your Fuzzer can successfully be created!");
+		System.out.println(args[0] + "\n" + args[1]);
+		if (custAuth > 0)
+			System.out.println(args[custAuth]);
+		if (comWords > 0)
+			System.out.println(args[comWords]);
+		 */
 		
 		Fuzzer fuzzer = new Fuzzer(url, commonWords);
 	}
