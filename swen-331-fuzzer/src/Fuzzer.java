@@ -84,7 +84,7 @@ public class Fuzzer {
 		{
 			redirectURL = loginDVWA(rootPg);
 		}
-		else if(rootPg.getUrl().toString().equals("http://127.0.0.1/bodgeit/login.php"))
+		else if(rootPg.getUrl().toString().equals("http://127.0.0.1:8080/bodgeit/login.jsp"))
 				{
 					loginBodgeit(rootPg);
 				}
@@ -94,7 +94,17 @@ public class Fuzzer {
 			list.add(redirectURL);
 		
 		for (String a : list)
-			crawl(a, PageDiscoveryMethod.Crawled);
+		{
+				if (onSameSite(a, rootPg.getUrl().toString()))
+				{
+					try {
+						crawl(a, PageDiscoveryMethod.Crawled);
+					}
+					catch (IllegalArgumentException iae) {
+						
+					}
+				}
+		}
 		for (String guess : this.guessList)
 			crawl(parent+guess, PageDiscoveryMethod.Guessed);
 
@@ -121,17 +131,27 @@ public class Fuzzer {
 			String parentPath = getParentPath(url);
 			this.visitedPaths.add(parentPath);
 			
-			for (String guess : this.guessList)
+			//Don't crawl guessed pages
+			if (method != PageDiscoveryMethod.Guessed)
 			{
-				crawl(parentPath + guess, PageDiscoveryMethod.Guessed);
+				for (String guess : this.guessList)
+				{
+					crawl(parentPath + guess, PageDiscoveryMethod.Guessed);
+				}
 			}
 			
 		}
-
-		List<HtmlAnchor> anchors = pg.getAnchors();
 		
-		for (String a : resolveAnchors(pg, anchors))
-			crawl(a, PageDiscoveryMethod.Crawled);
+		//Don't crawl guessed pages
+		if (method != PageDiscoveryMethod.Guessed)
+		{
+			List<HtmlAnchor> anchors = pg.getAnchors();
+			for (String a : resolveAnchors(pg, anchors))
+			{
+				if (onSameSite(a, url))
+					crawl(a, PageDiscoveryMethod.Crawled);
+			}
+		}
 	}
 	
 	/*

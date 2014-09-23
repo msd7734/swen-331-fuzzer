@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.net.*;
 
+import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
+
 
 
 
@@ -124,7 +126,13 @@ public class Program {
 		*/ 
 		
 		Fuzzer fuzzer = new Fuzzer(url, commonWords);
-		fuzzer.setCustomAuthInfo(customAuth);
-		fuzzer.discover();
+		if (customAuth != null)
+			fuzzer.setCustomAuthInfo(customAuth);
+		try {
+			fuzzer.discover();
+		}
+		catch (FailingHttpStatusCodeException fhsce) {
+			System.err.println("That URL returned a status code of " + fhsce.getStatusCode());
+		}
 	}
 }
