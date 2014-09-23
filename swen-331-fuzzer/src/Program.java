@@ -21,7 +21,7 @@ public class Program {
 		if (args.length < 3)
 		{
 			System.err.print("Usage: fuzz [discover | test] url OPTIONS\n" +
-					"\tWhere discover requires the --common-words option and test "+
+					"Where discover requires the --common-words option and test "+
 					"requires all discover options and the --vectors and --sensitive options.");
 			return;
 		}
@@ -134,7 +134,7 @@ public class Program {
 			System.out.println(args[custAuth]);
 		if (comWords > 0)
 			System.out.println(args[comWords]);
-		 */
+		*/ 
 		
 		Fuzzer fuzzer = new Fuzzer(url, commonWords);
 	}

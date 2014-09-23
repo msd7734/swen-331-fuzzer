@@ -214,12 +214,18 @@ public class Fuzzer {
 	private static String getCanonicalUrl(String urlStr)
 	{
 			URL url = getURL(urlStr);
-			String res = url.getProtocol() + "://" + url.getHost() + url.getPath();
+			String res = url.getProtocol() + "://" + url.getHost() +
+					url.getPort() +
+					url.getPath();
 			return res;
 	}
 	
 	private static boolean urlStrictCompare(String u1, String u2)
 	{
 		return getCanonicalUrl(u1).equals(getCanonicalUrl(u2));
+	}
+	
+	public static void main(String[] args) {
+		Fuzzer fuzzer = new Fuzzer("http://www.google.com", new ArrayList<String>());
 	}
 }
