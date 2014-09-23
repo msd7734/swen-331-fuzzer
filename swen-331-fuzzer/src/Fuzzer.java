@@ -82,39 +82,22 @@ public class Fuzzer {
 		String redirectURL = "";
 		if(rootPg.getUrl().toString().equals("http://127.0.0.1/dvwa/login.php"))
 		{
-			HtmlForm form =  rootPg.getForms().get(0);
-			HtmlTextInput userName = form.getInputByName("username");
-			HtmlPasswordInput password = form.getInputByName("password");
-			HtmlSubmitInput button = form.getInputByName("Login");
-			
-			userName.setValueAttribute(this.authStr.getUsername());
-			password.setValueAttribute(this.authStr.getPassword());
-			HtmlPage p2 = button.click();
-			redirectURL = p2.getUrl().toString();
+			redirectURL = loginDVWA(rootPg);
 		}
+		else if(rootPg.getUrl().toString().equals("http://127.0.0.1/bodgeit/login.php"))
+				{
+					loginBodgeit(rootPg);
+				}
+		
 		List<String> list = resolveAnchors(rootPg, anchors);
 		if(!redirectURL.equals(""))
 			list.add(redirectURL);
-		//TODO: Add authentication handling for Bodgeit and DVWA
 		
 		for (String a : list)
 			crawl(a, PageDiscoveryMethod.Crawled);
 		for (String guess : this.guessList)
 			crawl(parent+guess, PageDiscoveryMethod.Guessed);
-		/*
-		switch(this.targetSite)
-		{
-		case Bodgeit:
-			break;
-		case DVWA: 
-			break;
-		case Other:
-		default:
-			
-			break;
-		}*/
-		
-		//after fully crawling, print the final report result
+
 		this.report.show();
 	}
 	
@@ -170,8 +153,8 @@ public class Fuzzer {
 		}
 		else if(customAuth.equalsIgnoreCase("bodgeit"))
 		{
-			/*this.username = "admin";
-			this.password = "password";*/
+			this.authStr.setUsername("admin");
+			this.authStr.setPass("password");
 		}
 	}
 	
@@ -228,6 +211,32 @@ public class Fuzzer {
 		return res;
 	}
 
+	private String loginDVWA(HtmlPage rootPg) throws IOException
+	{
+		HtmlForm form =  rootPg.getForms().get(0);
+		HtmlTextInput userName = form.getInputByName("username");
+		HtmlPasswordInput password = form.getInputByName("password");
+		HtmlSubmitInput button = form.getInputByName("Login");
+		
+		userName.setValueAttribute(this.authStr.getUsername());
+		password.setValueAttribute(this.authStr.getPassword());
+		HtmlPage p2 = button.click();
+		
+		return p2.getUrl().toString();
+	}
+	
+	private void loginBodgeit(HtmlPage rootPg) throws IOException
+	{
+		HtmlForm form =  rootPg.getForms().get(0);
+		HtmlTextInput userName = form.getInputByName("username");
+		HtmlPasswordInput password = form.getInputByName("password");
+		HtmlSubmitInput button = form.getInputByValue("Login");
+		
+		userName.setValueAttribute(this.authStr.getUsername());
+		password.setValueAttribute(this.authStr.getPassword());
+		button.click();
+	}
+	
 	//Convert our string representations into URLs for utility's sake
 	//Encapsulating it like this avoids a ton of try/catch blocks 
 	private static URL getURL(String str)
@@ -286,7 +295,4 @@ public class Fuzzer {
 		return getCanonicalUrl(u1).equals(getCanonicalUrl(u2));
 	}
 	
-	public static void main(String[] args) {
-		Fuzzer fuzzer = new Fuzzer("http://www.google.com", new ArrayList<String>());
-	}
 }
