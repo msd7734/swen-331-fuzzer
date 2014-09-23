@@ -51,6 +51,10 @@ public class Fuzzer {
 		this.targetSite = TargetSiteIdent.Other;
 		
 		webClient = new WebClient();
+		WebClientOptions options = webClient.getOptions();
+		options.setThrowExceptionOnFailingStatusCode(false);
+		options.setPrintContentOnFailingStatusCode(false);
+		
 		cookieManager = webClient.getCookieManager();
 		cookieManager.setCookiesEnabled(true);
 		
@@ -72,6 +76,7 @@ public class Fuzzer {
 		reportPage(rootPg, PageDiscoveryMethod.Root);
 		
 		List<HtmlAnchor> anchors = rootPg.getAnchors();
+		String parent = getParentPath(rootPg.getUrl().toString());
 		
 		//TODO: Add authentication handling for Bodgeit and DVWA
 		switch(this.targetSite)
@@ -85,7 +90,7 @@ public class Fuzzer {
 			for (HtmlAnchor a : anchors)
 				crawl(a.getHrefAttribute(), PageDiscoveryMethod.Crawled);
 			for (String guess : this.guessList)
-				crawl(guess, PageDiscoveryMethod.Guessed);
+				crawl(parent+guess, PageDiscoveryMethod.Guessed);
 			break;
 		}
 		

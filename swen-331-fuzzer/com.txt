@@ -1,0 +1,8 @@
+phpmyadmin
+admin
+control
+manager
+sql
+database
+db
+hosts

@@ -137,5 +137,6 @@ public class Program {
 		*/ 
 		
 		Fuzzer fuzzer = new Fuzzer(url, commonWords);
+		fuzzer.discover();
 	}
 }
