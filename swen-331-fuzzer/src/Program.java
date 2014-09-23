@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -23,8 +24,12 @@ public class Program {
 		int rand = 0;
 		int slow = 0;
 		
-		int index = 0;
-		for(String s : args)
+		List<String> commonWords = new ArrayList<String>();
+		FuzzerAuthString authString = new FuzzerAuthString();
+		
+		int index = 2;
+		List<String> options = Arrays.asList(args).subList(2, args.length);
+		for(String s : options)
 		{
 			if(s.contains("--custom-auth=")){
 				custAuth = index;	
@@ -42,9 +47,24 @@ public class Program {
 			++index;
 		}
 		
+		if(args[comWords].contains("--common-words=")){
+			String filePath = args[comWords].substring(15);
+			BufferedReader reader = new BufferedReader(new FileReader(filePath));
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				commonWords.add(line);
+			}
+			reader.close();
+		}
+		
+		else {
+			System.err.println("--common-words=[File name] is a required parameter.");
+			return;
+		}
+		
 		if(args[custAuth].contains("--custom-auth="))
 		{	
-			FuzzerAuthString authString = new FuzzerAuthString();
+			authString = new FuzzerAuthString();
 			String auth = args[custAuth].substring(14, args[custAuth].length());
 			String[] cred = auth.split(" ");
 			if(cred.length == 1)
@@ -71,18 +91,17 @@ public class Program {
 				}
 			}
 		}
+	
+		String command = args[0];
 		
-		if(args[comWords].contains("--common-words=")){
-			String filePath = args[comWords].substring(15);
-			List<String> commonWords = new ArrayList<String>();
-			
-			BufferedReader reader = new BufferedReader(new FileReader(filePath));
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				commonWords.add(line);
-			}
-			
+		if (!(command.equals("discover") || command.equals("test")))
+		{
+			System.err.println("Usage: fuzz [discover | test] url OPTIONS");
+			return;
 		}
 		
+		String url = args[1];
+		
+		Fuzzer fuzzer = new Fuzzer(url, commonWords);
 	}
 }

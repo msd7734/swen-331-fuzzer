@@ -24,7 +24,6 @@ public class Fuzzer {
 	private List<String> visitedUrls;
 	//these are the results of Java's URL.getPath()
 	private List<String> visitedPaths;
-	private List<String> knownCookies;
 	
 	private String rootUrl;
 	private List<String> commonWords;
@@ -105,6 +104,10 @@ public class Fuzzer {
 			return;
 		
 		this.visitedUrls.add(url);
+		
+		//report result
+		reportPage(pg, method);
+		
 		if (!this.visitedPaths.contains(getParentPath(url)))
 		{
 			String parentPath = getParentPath(url);
@@ -116,9 +119,7 @@ public class Fuzzer {
 			}
 			
 		}
-		
-		//report result
-		reportPage(pg, method);
+
 		
 		List<HtmlAnchor> anchors = pg.getAnchors();
 		

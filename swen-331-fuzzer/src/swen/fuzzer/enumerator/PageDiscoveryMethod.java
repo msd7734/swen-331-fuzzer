@@ -4,6 +4,7 @@ public enum PageDiscoveryMethod {
 	Crawled("Crawled"),
 	Guessed("Guessed"),
 	Root("Provided by user"),
+	Login("Authentication redirect"),
 	Unknown("Unknown");
 	
 	private String printedName;
