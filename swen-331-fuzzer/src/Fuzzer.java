@@ -64,7 +64,8 @@ public class Fuzzer {
 	/**
 	 * Crawl and guess to access and catalog web pages, and print findings to standard output.
 	 */
-	public void discover() throws MalformedURLException,IOException,FailingHttpStatusCodeException
+	public void discover() throws MalformedURLException,IOException,
+		FailingHttpStatusCodeException
 	{
 		final HtmlPage rootPg = webClient.getPage(this.rootUrl);
 		
@@ -76,6 +77,7 @@ public class Fuzzer {
 		reportPage(rootPg, PageDiscoveryMethod.Root);
 		
 		List<HtmlAnchor> anchors = rootPg.getAnchors();
+		
 		String parent = getParentPath(rootPg.getUrl().toString());
 		
 		//TODO: Add authentication handling for Bodgeit and DVWA
@@ -87,8 +89,8 @@ public class Fuzzer {
 			break;
 		case Other:
 		default:
-			for (HtmlAnchor a : anchors)
-				crawl(a.getHrefAttribute(), PageDiscoveryMethod.Crawled);
+			for (String a : resolveAnchors(rootPg, anchors))
+				crawl(a, PageDiscoveryMethod.Crawled);
 			for (String guess : this.guessList)
 				crawl(parent+guess, PageDiscoveryMethod.Guessed);
 			break;
@@ -99,7 +101,7 @@ public class Fuzzer {
 	}
 	
 	private void crawl(String url, PageDiscoveryMethod method) throws MalformedURLException,IOException
-	{
+	{	
 		if (this.visitedUrls.contains(url))
 			return;
 		
@@ -125,11 +127,10 @@ public class Fuzzer {
 			
 		}
 
-		
 		List<HtmlAnchor> anchors = pg.getAnchors();
 		
-		for (HtmlAnchor a : anchors)
-			crawl(a.getHrefAttribute(), PageDiscoveryMethod.Crawled);
+		for (String a : resolveAnchors(pg, anchors))
+			crawl(a, PageDiscoveryMethod.Crawled);
 	}
 	
 	/*
@@ -151,6 +152,26 @@ public class Fuzzer {
 	/*
 	 * Helper Methods
 	 */
+	
+	private List<String> resolveAnchors(HtmlPage page, List<HtmlAnchor> anchors)
+	{
+		try 
+		{
+			List<String> fullUrls = new ArrayList<String>(anchors.size());
+			for (HtmlAnchor a : anchors)
+			{
+				URI current = new URI(page.getUrl().toString());
+				URI result = current.resolve(a.getHrefAttribute());
+				fullUrls.add(result.toString());
+			}
+			return fullUrls;
+		}
+		catch (URISyntaxException urise)
+		{
+			System.err.println(urise.getMessage());
+			return new ArrayList<String>();
+		}
+	}
 	
 	private void reportPage(HtmlPage pg, PageDiscoveryMethod method)
 	{
