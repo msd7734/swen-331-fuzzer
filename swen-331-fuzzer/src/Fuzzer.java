@@ -243,6 +243,15 @@ public class Fuzzer {
 		}
 	}
 	
+	private static boolean onSameSite(String path1, String path2)
+	{
+		URL url1 = getURL(path1);
+		URL url2 = getURL(path2);
+		String host1 = url1.getProtocol() + "://" + url1.getHost() + url1.getPort();
+		String host2 = url2.getProtocol() + "://" + url2.getHost() + url2.getPort();
+		return (host1.equals(host2));
+	}
+	
 	private static String getParentPath(String path)
 	{
 		try {
