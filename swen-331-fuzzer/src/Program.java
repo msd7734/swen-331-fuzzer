@@ -49,7 +49,7 @@ public class Program {
 		int slow = 0;
 		
 		List<String> commonWords = new ArrayList<String>();
-		FuzzerAuthString authString = new FuzzerAuthString();
+		String customAuth = null;
 		
 		int index = 2;
 		List<String> options = Arrays.asList(args).subList(2, args.length);
@@ -88,31 +88,18 @@ public class Program {
 		
 		if(args[custAuth].contains("--custom-auth="))
 		{	
-			authString = new FuzzerAuthString();
 			String auth = args[custAuth].substring(14, args[custAuth].length());
-			String[] cred = auth.split(" ");
-			if(cred.length == 1)
+			
+			if(auth.equalsIgnoreCase("dvwa"))
 			{
-				if(cred[0].contains("u=")){
-					authString.setUsername(cred[0].substring(2));
-					
-				}else if(cred[0].contains("p=")){
-					authString.setPass(cred[0].substring(2));
-				}
+				customAuth = "dvwa";
 			}
-			else if (cred.length == 2)
+			else if (auth.equalsIgnoreCase("bodgeit"))
 			{
-				if(cred[0].contains("u=")){
-					authString.setUsername(cred[0].substring(2));
-					if(cred[1].contains("p=")){
-						authString.setPass(cred[1].substring(2));
-					}
-				}else if(cred[0].contains("p=")){
-					authString.setPass(cred[0].substring(2));
-					if(cred[1].contains("u=")){
-						authString.setUsername(cred[1].substring(2));
-					}
-				}
+				customAuth = "bodgeit";
+			}
+			else{
+				System.out.println("The parameter --custom-auth=  was not correct");
 			}
 		}
 	
@@ -137,6 +124,7 @@ public class Program {
 		*/ 
 		
 		Fuzzer fuzzer = new Fuzzer(url, commonWords);
+		fuzzer.setCustomAuthInfo(customAuth);
 		fuzzer.discover();
 	}
 }

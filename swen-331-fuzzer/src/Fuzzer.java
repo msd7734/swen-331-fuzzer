@@ -5,6 +5,7 @@ import java.io.IOException;
 import com.gargoylesoftware.htmlunit.*;
 import com.gargoylesoftware.htmlunit.CookieManager;
 import com.gargoylesoftware.htmlunit.html.*;
+import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLAnchorElement;
 import com.gargoylesoftware.htmlunit.util.*;
 
 import swen.fuzzer.enumerator.*;
@@ -47,13 +48,13 @@ public class Fuzzer {
 		this.rootUrl = rootUrl;
 		this.commonWords = commonWords;
 		this.guessList = getGuessList();
-		this.authStr = null;
+		this.authStr = new FuzzerAuthString();
 		this.targetSite = TargetSiteIdent.Other;
-		
 		webClient = new WebClient();
 		WebClientOptions options = webClient.getOptions();
 		options.setThrowExceptionOnFailingStatusCode(false);
 		options.setPrintContentOnFailingStatusCode(false);
+		options.setJavaScriptEnabled(false);
 		
 		cookieManager = webClient.getCookieManager();
 		cookieManager.setCookiesEnabled(true);
@@ -72,29 +73,46 @@ public class Fuzzer {
 		//throw exception here because we need a valid start point to do anything
 		if (rootPg.getWebResponse().getStatusCode() != 200)
 			throw new FailingHttpStatusCodeException(rootPg.getWebResponse());
-		
 		//Report the root page
 		reportPage(rootPg, PageDiscoveryMethod.Root);
 		
 		List<HtmlAnchor> anchors = rootPg.getAnchors();
 		
 		String parent = getParentPath(rootPg.getUrl().toString());
-		
+		String redirectURL = "";
+		if(rootPg.getUrl().toString().equals("http://127.0.0.1/dvwa/login.php"))
+		{
+			HtmlForm form =  rootPg.getForms().get(0);
+			HtmlTextInput userName = form.getInputByName("username");
+			HtmlPasswordInput password = form.getInputByName("password");
+			HtmlSubmitInput button = form.getInputByName("Login");
+			
+			userName.setValueAttribute(this.authStr.getUsername());
+			password.setValueAttribute(this.authStr.getPassword());
+			HtmlPage p2 = button.click();
+			redirectURL = p2.getUrl().toString();
+		}
+		List<String> list = resolveAnchors(rootPg, anchors);
+		if(!redirectURL.equals(""))
+			list.add(redirectURL);
 		//TODO: Add authentication handling for Bodgeit and DVWA
+		
+		for (String a : list)
+			crawl(a, PageDiscoveryMethod.Crawled);
+		for (String guess : this.guessList)
+			crawl(parent+guess, PageDiscoveryMethod.Guessed);
+		/*
 		switch(this.targetSite)
 		{
 		case Bodgeit:
 			break;
-		case DVWA:
+		case DVWA: 
 			break;
 		case Other:
 		default:
-			for (String a : resolveAnchors(rootPg, anchors))
-				crawl(a, PageDiscoveryMethod.Crawled);
-			for (String guess : this.guessList)
-				crawl(parent+guess, PageDiscoveryMethod.Guessed);
+			
 			break;
-		}
+		}*/
 		
 		//after fully crawling, print the final report result
 		this.report.show();
@@ -143,10 +161,18 @@ public class Fuzzer {
 	 * @param target Enum id for which site this authstring belongs to (sites are hardcoded)
 	 * 
 	 */
-	public void setCustomAuthInfo(FuzzerAuthString authStr, TargetSiteIdent target)
+	public void setCustomAuthInfo(String customAuth)
 	{
-		this.authStr = authStr;
-		this.targetSite = target;
+		if(customAuth.equalsIgnoreCase("dvwa"))
+		{
+			this.authStr.setUsername("admin");
+			this.authStr.setPass("password");
+		}
+		else if(customAuth.equalsIgnoreCase("bodgeit"))
+		{
+			/*this.username = "admin";
+			this.password = "password";*/
+		}
 	}
 	
 	/*
