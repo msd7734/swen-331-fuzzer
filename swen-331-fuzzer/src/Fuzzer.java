@@ -29,7 +29,11 @@ public class Fuzzer {
 	private String rootUrl;
 	private List<String> commonWords;
 	private List<String> guessList;
+	private List<String> vectors;
+	private List<String> sensitive;
 	private FuzzerAuthString authStr;
+	private boolean slowTest;
+	private boolean random;
 	private TargetSiteIdent targetSite;
 	
 	private final WebClient webClient;
@@ -49,6 +53,10 @@ public class Fuzzer {
 		this.commonWords = commonWords;
 		this.guessList = getGuessList();
 		this.authStr = new FuzzerAuthString();
+		this.vectors = null;
+		this.sensitive = null;
+		this.slowTest = false;
+		this.random = false;
 		this.targetSite = TargetSiteIdent.Other;
 		webClient = new WebClient();
 		WebClientOptions options = webClient.getOptions();
@@ -176,6 +184,45 @@ public class Fuzzer {
 			this.authStr.setUsername("admin");
 			this.authStr.setPass("password");
 		}
+	}
+	
+	/**
+	 * Set the list of Vectors to be used
+	 * @param vectorList The list of vectors provided by the user
+	 * 
+	 */
+	
+	public void setVectors(List<String> vectorList)
+	{	
+		this.vectors = vectorList;
+	}
+	
+	/**
+	 * Set the list of Sensitive information to be used
+	 * @param sensitiveList The list of sensitive information provided by the user
+	 * 
+	 */
+	public void setSensitive(List<String> sensitiveList){
+		this.sensitive = sensitiveList;
+	}
+	
+	/**
+	 * Set whether the program tests for delayed response 
+	 * @param test The boolean that tells the program whether 
+	 * 		  or not to check for a delayed response
+	 * 
+	 */
+	public void setSlow(boolean test){
+		this.slowTest = test;
+	}
+	
+	/**
+	 * Tells the program to randomly choose a page
+	 * and input fiel to test all the vectors in.
+	 * 
+	 */
+	public void setRandom(){
+		this.random = true;
 	}
 	
 	/*
