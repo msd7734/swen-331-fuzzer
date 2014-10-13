@@ -43,15 +43,31 @@ public class Program {
 			}
 		}
 		
-		int custAuth = 0;
-		int comWords = 0;
-		int vec = 0;
-		int sens = 0;
-		int rand = 0;
-		int slow = 0;
+		int custAuth = -1;
+		int comWords = -1;
+		int vec = -1;
+		int sens = -1;
+		int rand = -1;
+		int slow = -1;
 		
 		List<String> commonWords = new ArrayList<String>();
 		String customAuth = null;
+		List<String> vectors = new ArrayList<String>();
+		List<String> sensitive = new ArrayList<String>();
+		boolean randVectorTesting = false;
+		int slowResp = 500; //milliseconds
+		
+		String command = args[0];
+		boolean isDiscover = (command.equals("discover"));
+		boolean isTest = (command.equals("test"));
+		
+		if (!(isDiscover || isTest))
+		{
+			System.err.println("Usage: fuzz [discover | test] url OPTIONS");
+			return;
+		}
+		
+		String url = args[1];
 		
 		int index = 2;
 		List<String> options = Arrays.asList(args).subList(2, args.length);
@@ -73,7 +89,7 @@ public class Program {
 			++index;
 		}
 		
-		if(args[comWords].contains("--common-words=")){
+		if(comWords != -1){
 			String filePath = args[comWords].substring(15);
 			BufferedReader reader = new BufferedReader(new FileReader(filePath));
 			String line = null;
@@ -88,7 +104,7 @@ public class Program {
 			return;
 		}
 		
-		if(args[custAuth].contains("--custom-auth="))
+		if(custAuth != -1)
 		{	
 			String auth = args[custAuth].substring(14, args[custAuth].length());
 			
@@ -104,16 +120,23 @@ public class Program {
 				System.out.println("The parameter --custom-auth=  was not correct");
 			}
 		}
-	
-		String command = args[0];
 		
-		if (!(command.equals("discover") || command.equals("test")))
-		{
-			System.err.println("Usage: fuzz [discover | test] url OPTIONS");
+		if (vec != -1) {
+			String filePath = args[vec].substring(10);
+			BufferedReader reader = new BufferedReader(new FileReader(filePath));
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				vectors.add(line);
+			}
+		}
+		else if (isTest) {
+			System.err.println("The test command requires the --vectors and --sensitive arguments.");
 			return;
 		}
-		
-		String url = args[1];
+	
+		if (sens != -1) {
+			
+		}
 		
 		//Args debug block
 		/*
