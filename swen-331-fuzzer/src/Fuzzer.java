@@ -162,6 +162,22 @@ public class Fuzzer {
 		}
 	}
 	
+	public void test() throws FailingHttpStatusCodeException, MalformedURLException, IOException
+	{
+		discover();
+		ArrayList<String> allPages = new ArrayList<String>();
+		ArrayList<String> allFormPages = new ArrayList<String>();
+		for(String url : allPages)
+		{
+			final HtmlPage pg = webClient.getPage(url);
+			DomElement  form = pg.getElementById("form");
+			if(form != null){
+				allFormPages.add(pg.getUrl().toString());
+			}
+		}
+		
+	}
+	
 	/*
 	 * Accessors and Modifiers
 	 */
