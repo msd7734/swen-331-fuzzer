@@ -184,10 +184,10 @@ public class Program {
 		fuzzer.setSlow(slowResp);
 		try {
 			if(isDiscover){
-				fuzzer.discover();
+				fuzzer.execute("discover");
 			}
 			else{
-				fuzzer.test();
+				fuzzer.execute("test");
 			}
 		}
 		catch (FailingHttpStatusCodeException fhsce) {

@@ -70,6 +70,15 @@ public class Fuzzer {
 		this.report = new Report();
 	}
 	
+	public void execute(String command) throws MalformedURLException, FailingHttpStatusCodeException, IOException{
+		discover();
+		if(command.equals("test")){
+			test();
+		}
+		this.report.show();
+	}
+	
+	
 	/**
 	 * Crawl and guess to access and catalog web pages, and print findings to standard output.
 	 */
@@ -116,7 +125,6 @@ public class Fuzzer {
 		for (String guess : this.guessList)
 			crawl(parent+guess, PageDiscoveryMethod.Guessed);
 
-		this.report.show();
 	}
 	
 	private void crawl(String url, PageDiscoveryMethod method) throws MalformedURLException,IOException
@@ -164,7 +172,6 @@ public class Fuzzer {
 	
 	public void test() throws FailingHttpStatusCodeException, MalformedURLException, IOException
 	{
-		discover();
 		
 		List<swen.fuzzer.report.Page> allPages = this.report.getPages();
 		
@@ -174,8 +181,11 @@ public class Fuzzer {
 		
 		for(swen.fuzzer.report.Page url : allPages)
 		{
+			HtmlForm  form = null;
 			final HtmlPage pg = webClient.getPage(url.getURL().toString());
-			HtmlForm  form = pg.getForms().get(0);
+			if(!pg.getForms().isEmpty()){
+				form = pg.getForms().get(0);
+			}
 			if(form != null){
 				allFormPages.add(pg.getUrl().toString());
 			}
@@ -193,6 +203,7 @@ public class Fuzzer {
 			allFormPages.add(randomItem);
 		}
 		
+		System.out.println("Number of pages with forms = " + allFormPages.size());
 		//run vectors on allFormPages
 		for(String url : allFormPages){
 			final HtmlPage testPage = webClient.getPage(url);
@@ -244,6 +255,7 @@ public class Fuzzer {
 		{
 			analyze(o);
 		}
+
 		
 	}
 	
@@ -262,12 +274,14 @@ public class Fuzzer {
 		
 		if (response.getStatusCode() != 200)
 		{
+			
 			report.setPageIssue(url, TestIssue.ErrorStatus);
 		}
 		if(collectedAlerts.contains("xxs")){
 			report.setPageIssue(url, TestIssue.Sanitization);
 		}
 		if(response.getLoadTime() > slowTest){
+			System.out.println("SLOWWWWWWW");
 			report.setPageIssue(url, TestIssue.Slow);
 		}
 		
