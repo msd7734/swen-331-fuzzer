@@ -207,7 +207,7 @@ public class Fuzzer {
 				int randomIndex = -1;
 				if(random){
 					Random randomGenerator = new Random();
-					int index = randomGenerator.nextInt(htmlInput.size());
+					randomIndex = randomGenerator.nextInt(htmlInput.size());
 				}
 				for(String vector : vectors){
 					HtmlSubmitInput submit = null;
@@ -216,7 +216,14 @@ public class Fuzzer {
 						if(!hInput.getTypeAttribute().equalsIgnoreCase("submit"))
 						{
 							//set the input to the vector
-							hInput.setValueAttribute(vector);
+							if(random){
+								if(hInput.equals(htmlInput.get(randomIndex))){
+									hInput.setValueAttribute(vector);
+								}
+							}else{
+								hInput.setValueAttribute(vector);
+							}
+							
 						}
 						else // it is the submit button
 						{
