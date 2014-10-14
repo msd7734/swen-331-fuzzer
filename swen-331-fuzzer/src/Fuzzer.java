@@ -167,12 +167,16 @@ public class Fuzzer {
 		discover();
 		List<swen.fuzzer.report.Page> allPages = this.report.getPages();
 		ArrayList<String> allFormPages = new ArrayList<String>();
+		ArrayList<String> otherPages = new ArrayList<String>();
 		for(swen.fuzzer.report.Page url : allPages)
 		{
 			final HtmlPage pg = webClient.getPage(url.getURL().toString());
 			HtmlForm  form = pg.getForms().get(0);
 			if(form != null){
 				allFormPages.add(pg.getUrl().toString());
+			}
+			else{
+				otherPages.add(pg.getUrl().toString());
 			}
 		}
 		
@@ -210,6 +214,12 @@ public class Fuzzer {
 				}
 			}
 			//Analyze the page
+			analyze(url);
+		}
+		//Analyze the rest of the pages without forms
+		for(String o : otherPages)
+		{
+			analyze(o);
 		}
 		
 	}
@@ -249,8 +259,6 @@ public class Fuzzer {
 		if(sensitiveTest){
 			report.setPageIssue(url, TestIssue.SensitiveData);
 		}
-		
-		
 	}
 	
 	//
