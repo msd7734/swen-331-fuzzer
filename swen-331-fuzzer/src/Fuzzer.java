@@ -182,7 +182,13 @@ public class Fuzzer {
 			final HtmlPage testPage = webClient.getPage(url);
 			ArrayList<HtmlForm> allForms = testPage.getForms();
 			for(HtmlForm form : allForms){
-				//somehow get all the text areas
+				//somehow get all the text areas - Possibly like this? 
+				ArrayList<DomElement> inputs = testPage.getElementsByTagName("input");
+				ArrayList<HtmlInput> htmlInput = new ArrayList<HtmlInput>();
+				for(DomElement i : inputs){
+					htmlInput.add((HtmlInput) i)
+				}
+				
 				for(String vector : vectors){
 					//for each text area set the input to the vector string
 					//submit the vector
