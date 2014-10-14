@@ -175,6 +175,13 @@ public class Program {
 		Fuzzer fuzzer = new Fuzzer(url, commonWords);
 		if (customAuth != null)
 			fuzzer.setCustomAuthInfo(customAuth);
+		if (vectors.size() > 0)
+			fuzzer.setVectors(vectors);
+		if (sensitive.size() > 0)
+			fuzzer.setSensitive(sensitive);
+		if (randVectorTesting)
+			fuzzer.setRandom();
+		fuzzer.setSlow(slowResp);
 		try {
 			fuzzer.discover();
 		}
