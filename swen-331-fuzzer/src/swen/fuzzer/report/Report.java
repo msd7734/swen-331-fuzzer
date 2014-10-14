@@ -16,7 +16,6 @@ public class Report {
 
 	private List<Page> pages = new ArrayList<Page>();
 	
-	
 	public List<Page> getPages() {
 		return pages;
 	}
@@ -153,6 +152,7 @@ public class Report {
 				printLinks(page);
 				printInputs(page);
 				printCookies(page);
+				printIssues(page);
 				System.out.println();
 			}
 		}
@@ -185,6 +185,7 @@ public class Report {
 		Integer numberForms = 0;
 		Integer numberInputs = 0;
 		Integer numberCookies = 0;
+		
 		List<String> exploredUrl = new ArrayList<String>();
 		for (Page page : pages) {
 			if(!isExplored(page, exploredUrl))
@@ -206,7 +207,46 @@ public class Report {
 		System.out.printf("Found %d forms \n",numberForms);
 		System.out.printf("Found %d inputs \n",numberInputs);
 		System.out.printf("Found %d cookies \n",numberCookies);
+		
+		for (TestIssue type : TestIssue.values()) {
+			System.out.printf("%d pages found with %s issue\n",pagesByIssueType(pages, type).size(),type.getType());
+		}
+		
 		System.out.printf("Successfully guessed %d urls \n",numberGuessed);
+	}
+	
+	private List<Page> pagesByIssueType(List<Page> pages, TestIssue type)
+	{
+		List<Page> result = new ArrayList<Page>();
+		for (Page page : pages) {
+			for (TestIssue issue : page.getIssues()) {
+				if(issue.equals(type) && !result.contains(page))
+				{
+					result.add(page);
+				}
+			}
+		}
+		return result;
+	}
+	
+	private void printIssues(Page page)
+	{
+		List<TestIssue> explored = new ArrayList<TestIssue>();
+		boolean status = true;
+		for (TestIssue issue : page.getIssues()) {
+			for( TestIssue visited : explored)
+			{
+				if(issue == visited)
+				{
+					status = false;
+					break;
+				}
+			}
+			if(status)
+			{
+				System.out.printf("Found %s vunerability\n",issue.getType());
+			}
+		}
 	}
 	
 	private void printForms(Page page)
