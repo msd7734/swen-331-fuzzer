@@ -180,13 +180,13 @@ public class Fuzzer {
 		//run vectors on allFormPages
 		for(String url : allFormPages){
 			final HtmlPage testPage = webClient.getPage(url);
-			ArrayList<HtmlForm> allForms = testPage.getForms();
+			List<HtmlForm> allForms = testPage.getForms();
 			for(HtmlForm form : allForms){
 				//somehow get all the text areas - Possibly like this? 
-				ArrayList<DomElement> inputs = testPage.getElementsByTagName("input");
+				List<DomElement> inputs = testPage.getElementsByTagName("input");
 				ArrayList<HtmlInput> htmlInput = new ArrayList<HtmlInput>();
 				for(DomElement i : inputs){
-					htmlInput.add((HtmlInput) i)
+					htmlInput.add((HtmlInput) i);
 				}
 				
 				for(String vector : vectors){
@@ -200,7 +200,7 @@ public class Fuzzer {
 						}
 						else // it is the submit button
 						{
-							submit = hInput;
+							submit = (HtmlSubmitInput) hInput;
 						}
 						
 					}
