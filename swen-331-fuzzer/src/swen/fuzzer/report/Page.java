@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import swen.fuzzer.enumerator.TestIssue;
+
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
@@ -19,10 +21,16 @@ public class Page {
 	private List<HtmlAnchor> links= new ArrayList<HtmlAnchor>();
 	private Set<Cookie> actualCookies = new HashSet<Cookie>();
 	private Set<Cookie> oldCookies = new HashSet<Cookie>();
+	private List<TestIssue> issues = null;
 	
+	public List<TestIssue> getIssues() {
+		return issues;
+	}
+
 	public Page(String url, String type) {
 		this.URL = url;
 		this.type = type;
+		this.issues = new ArrayList<TestIssue>();
 	}
 
 	public List<HtmlForm> getForms() {

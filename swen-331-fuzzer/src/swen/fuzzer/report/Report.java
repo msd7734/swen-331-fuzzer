@@ -3,6 +3,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import swen.fuzzer.enumerator.TestIssue;
+
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
@@ -104,6 +106,24 @@ public class Report {
 		else
 		{
 			page.setCookies(cookies);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param URL: string cointaing URL page
+	 * @param issue: a enum type of TestIssue, represents an issue found 
+	 */
+	public void setPageIssue(String URL, TestIssue issue)
+	{
+		Page page = getPageByURL(URL);
+		if(page == null)
+		{
+			throw new RuntimeException("There is no page with this URL in the report");
+		}
+		else
+		{
+			page.getIssues().add(issue);
 		}
 	}
 	
