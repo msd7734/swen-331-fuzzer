@@ -170,7 +170,7 @@ public class Fuzzer {
 		for(swen.fuzzer.report.Page url : allPages)
 		{
 			final HtmlPage pg = webClient.getPage(url.getURL().toString());
-			DomElement  form = pg.getElementById("form");
+			HtmlForm  form = pg.getForms().get(0);
 			if(form != null){
 				allFormPages.add(pg.getUrl().toString());
 			}
@@ -178,9 +178,19 @@ public class Fuzzer {
 		
 		
 		//run vectors on allFormPages
+		for(String url : allFormPages){
+			final HtmlPage testPage = webClient.getPage(url);
+			ArrayList<HtmlForm> allForms = testPage.getForms();
+			for(HtmlForm form : allForms){
+				//somehow get all the text areas
+				for(String vector : vectors){
+					//for each text area set the input to the vector string
+					//submit the vector
+				}
+			}
+			//Analyze the page
+		}
 		
-		
-		//Analyze all pages 
 	}
 	
 	/*
