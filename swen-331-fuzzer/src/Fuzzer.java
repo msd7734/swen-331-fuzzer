@@ -55,7 +55,7 @@ public class Fuzzer {
 		this.authStr = new FuzzerAuthString();
 		this.vectors = null;
 		this.sensitive = null;
-		this.slowTest = 0;
+		this.slowTest = 500;
 		this.random = false;
 		this.targetSite = TargetSiteIdent.Other;
 		webClient = new WebClient();
@@ -213,6 +213,32 @@ public class Fuzzer {
 		}
 		
 	}
+	
+	public void analyze(String url) throws FailingHttpStatusCodeException, MalformedURLException, IOException{
+		final ArrayList<String> collectedAlerts = new ArrayList<String>();
+	    webClient.setAlertHandler(new CollectingAlertHandler(collectedAlerts));
+	    final HtmlPage testPage = webClient.getPage(url);
+	    WebResponse response = testPage.getWebResponse();
+		
+		if (response.getStatusCode() != 200)
+		{
+			report.setPageIssue(url, TestIssue.ErrorStatus);
+		}
+		if(collectedAlerts.contains("xxs")){
+			report.setPageIssue(url, TestIssue.Sanitization);
+		}
+		if(response.getLoadTime() > slowTest){
+			report.setPageIssue(url, TestIssue.Slow);
+		}
+		
+		
+		
+		
+		
+		
+	}
+	
+	//
 	
 	/*
 	 * Accessors and Modifiers
