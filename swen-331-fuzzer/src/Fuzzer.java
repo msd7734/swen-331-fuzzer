@@ -165,9 +165,13 @@ public class Fuzzer {
 	public void test() throws FailingHttpStatusCodeException, MalformedURLException, IOException
 	{
 		discover();
+		
 		List<swen.fuzzer.report.Page> allPages = this.report.getPages();
+		
 		ArrayList<String> allFormPages = new ArrayList<String>();
 		ArrayList<String> otherPages = new ArrayList<String>();
+		
+		
 		for(swen.fuzzer.report.Page url : allPages)
 		{
 			final HtmlPage pg = webClient.getPage(url.getURL().toString());
@@ -180,6 +184,14 @@ public class Fuzzer {
 			}
 		}
 		
+		if(random){
+			Random randomGenerator = new Random();
+			int index = randomGenerator.nextInt(allFormPages.size());
+			String randomItem = allFormPages.get(index);
+			allFormPages.removeAll(allFormPages);
+			otherPages.removeAll(otherPages);
+			allFormPages.add(randomItem);
+		}
 		
 		//run vectors on allFormPages
 		for(String url : allFormPages){
@@ -192,7 +204,11 @@ public class Fuzzer {
 				for(DomElement i : inputs){
 					htmlInput.add((HtmlInput) i);
 				}
-				
+				int randomIndex = -1;
+				if(random){
+					Random randomGenerator = new Random();
+					int index = randomGenerator.nextInt(htmlInput.size());
+				}
 				for(String vector : vectors){
 					HtmlSubmitInput submit = null;
 					for(HtmlInput hInput : htmlInput)
