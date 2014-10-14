@@ -183,7 +183,12 @@ public class Program {
 			fuzzer.setRandom();
 		fuzzer.setSlow(slowResp);
 		try {
-			fuzzer.discover();
+			if(isDiscover){
+				fuzzer.discover();
+			}
+			else{
+				fuzzer.test();
+			}
 		}
 		catch (FailingHttpStatusCodeException fhsce) {
 			System.err.println("That URL returned a status code of " + fhsce.getStatusCode());
