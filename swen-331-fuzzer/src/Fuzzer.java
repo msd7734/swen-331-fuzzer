@@ -32,7 +32,7 @@ public class Fuzzer {
 	private List<String> vectors;
 	private List<String> sensitive;
 	private FuzzerAuthString authStr;
-	private boolean slowTest;
+	private int slowTest;
 	private boolean random;
 	private TargetSiteIdent targetSite;
 	
@@ -55,7 +55,7 @@ public class Fuzzer {
 		this.authStr = new FuzzerAuthString();
 		this.vectors = null;
 		this.sensitive = null;
-		this.slowTest = false;
+		this.slowTest = 0;
 		this.random = false;
 		this.targetSite = TargetSiteIdent.Other;
 		webClient = new WebClient();
@@ -212,8 +212,8 @@ public class Fuzzer {
 	 * 		  or not to check for a delayed response
 	 * 
 	 */
-	public void setSlow(boolean test){
-		this.slowTest = test;
+	public void setSlow(int miliseconds){
+		this.slowTest = miliseconds;
 	}
 	
 	/**
