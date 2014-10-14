@@ -128,6 +128,7 @@ public class Program {
 			while ((line = reader.readLine()) != null) {
 				vectors.add(line);
 			}
+			reader.close();
 		}
 		else if (isTest) {
 			System.err.println("The test command requires the --vectors and --sensitive arguments.");
@@ -135,7 +136,30 @@ public class Program {
 		}
 	
 		if (sens != -1) {
-			
+			String filePath = args[vec].substring(10);
+			BufferedReader reader = new BufferedReader(new FileReader(filePath));
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				sensitive.add(line);
+			}
+			reader.close();
+		}
+		else if (isTest) {
+			System.err.println("The test command requires the --vectors and --sensitive arguments.");
+			return;
+		}
+		
+		if (rand != -1) {
+			randVectorTesting = (args[rand].toLowerCase().equals("true"));
+		}
+		
+		if (slow != -1) {
+			try {
+				slow = Integer.parseInt(args[slow]);
+			}
+			catch (NumberFormatException nfe) {
+				//keep slow at default of 500ms
+			}
 		}
 		
 		//Args debug block
