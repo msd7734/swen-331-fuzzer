@@ -219,6 +219,13 @@ public class Fuzzer {
 	    webClient.setAlertHandler(new CollectingAlertHandler(collectedAlerts));
 	    final HtmlPage testPage = webClient.getPage(url);
 	    WebResponse response = testPage.getWebResponse();
+	    List<DomElement> bodyElement = testPage.getElementsByTagName("body");
+	    String rawText = "";
+	    boolean sensitiveTest = false;
+	    
+	    for(DomElement d : bodyElement){
+	    	rawText += d.getTextContent();
+	    }
 		
 		if (response.getStatusCode() != 200)
 		{
@@ -231,9 +238,17 @@ public class Fuzzer {
 			report.setPageIssue(url, TestIssue.Slow);
 		}
 		
+		//sensitive 
 		
+		for(String sens : sensitive){
+			if(rawText.contains(sens)){
+				sensitiveTest = true;
+			}	
+		}
 		
-		
+		if(sensitiveTest){
+			report.setPageIssue(url, TestIssue.SensitiveData);
+		}
 		
 		
 	}
