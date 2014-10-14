@@ -190,8 +190,23 @@ public class Fuzzer {
 				}
 				
 				for(String vector : vectors){
+					HtmlSubmitInput submit = null;
+					for(HtmlInput hInput : htmlInput)
+					{
+						if(!hInput.getTypeAttribute().equalsIgnoreCase("submit"))
+						{
+							//set the input to the vector
+							hInput.setValueAttribute(vector);
+						}
+						else // it is the submit button
+						{
+							submit = hInput;
+						}
+						
+					}
 					//for each text area set the input to the vector string
-					//submit the vector
+					submit.click();
+					
 				}
 			}
 			//Analyze the page
