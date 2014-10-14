@@ -175,22 +175,26 @@ public class Fuzzer {
 		
 		List<swen.fuzzer.report.Page> allPages = this.report.getPages();
 		
+		
+		
 		ArrayList<String> allFormPages = new ArrayList<String>();
 		ArrayList<String> otherPages = new ArrayList<String>();
 		
 		
 		for(swen.fuzzer.report.Page url : allPages)
 		{
-			HtmlForm  form = null;
-			final HtmlPage pg = webClient.getPage(url.getURL().toString());
-			if(!pg.getForms().isEmpty()){
-				form = pg.getForms().get(0);
-			}
-			if(form != null){
-				allFormPages.add(pg.getUrl().toString());
-			}
-			else{
-				otherPages.add(pg.getUrl().toString());
+			if(url.getType()!= PageDiscoveryMethod.Guessed.getPrintedName()){
+				HtmlForm  form = null;
+				final HtmlPage pg = webClient.getPage(url.getURL().toString());
+				if(!pg.getForms().isEmpty()){
+					form = pg.getForms().get(0);
+				}
+				if(form != null){
+					allFormPages.add(pg.getUrl().toString());
+				}
+				else{
+					otherPages.add(pg.getUrl().toString());
+				}
 			}
 		}
 		
@@ -207,10 +211,14 @@ public class Fuzzer {
 		//run vectors on allFormPages
 		for(String url : allFormPages){
 			final HtmlPage testPage = webClient.getPage(url);
+			Cookie sec = new Cookie("127.0.0.1", "security", "low");
+			cookieManager.removeCookie(cookieManager.getCookie("security"));
+			cookieManager.addCookie(sec);
+			
 			List<HtmlForm> allForms = testPage.getForms();
 			for(HtmlForm form : allForms){
 				//somehow get all the text areas - Possibly like this? 
-				List<DomElement> inputs = testPage.getElementsByTagName("input");
+				List<HtmlElement> inputs = form.getElementsByTagName("input");
 				ArrayList<HtmlInput> htmlInput = new ArrayList<HtmlInput>();
 				for(DomElement i : inputs){
 					htmlInput.add((HtmlInput) i);
@@ -233,6 +241,7 @@ public class Fuzzer {
 								}
 							}else{
 								hInput.setValueAttribute(vector);
+								System.out.println(hInput.getValueAttribute());
 							}
 							
 						}
@@ -260,33 +269,42 @@ public class Fuzzer {
 	}
 	
 	public void analyze(String url) throws FailingHttpStatusCodeException, MalformedURLException, IOException{
+		WebClientOptions options = webClient.getOptions();
+		options.setJavaScriptEnabled(true);
 		final ArrayList<String> collectedAlerts = new ArrayList<String>();
+		
 	    webClient.setAlertHandler(new CollectingAlertHandler(collectedAlerts));
+	    for(String s : collectedAlerts){
+			System.out.println(s);
+		}
 	    final HtmlPage testPage = webClient.getPage(url);
 	    WebResponse response = testPage.getWebResponse();
 	    List<DomElement> bodyElement = testPage.getElementsByTagName("body");
 	    String rawText = "";
-	    boolean sensitiveTest = false;
 	    
-	    for(DomElement d : bodyElement){
-	    	rawText += d.getTextContent();
-	    }
 		
 		if (response.getStatusCode() != 200)
 		{
 			
 			report.setPageIssue(url, TestIssue.ErrorStatus);
 		}
-		if(collectedAlerts.contains("xxs")){
+		if(collectedAlerts.contains("XXS")){
 			report.setPageIssue(url, TestIssue.Sanitization);
 		}
 		if(response.getLoadTime() > slowTest){
+			System.out.println(slowTest);
+			System.out.println(response.getLoadTime());
 			System.out.println("SLOWWWWWWW");
 			report.setPageIssue(url, TestIssue.Slow);
 		}
 		
 		//sensitive 
 		
+		boolean sensitiveTest = false;
+	    
+	    for(DomElement d : bodyElement){
+	    	rawText += d.getTextContent();
+	    }
 		for(String sens : sensitive){
 			if(rawText.contains(sens)){
 				sensitiveTest = true;
@@ -296,6 +314,7 @@ public class Fuzzer {
 		if(sensitiveTest){
 			report.setPageIssue(url, TestIssue.SensitiveData);
 		}
+		options.setJavaScriptEnabled(false);
 	}
 	
 	//

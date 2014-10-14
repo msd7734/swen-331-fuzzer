@@ -73,6 +73,7 @@ public class Program {
 		List<String> options = Arrays.asList(args).subList(2, args.length);
 		for(String s : options)
 		{
+			System.out.println(s);
 			if(s.contains("--custom-auth=")){
 				custAuth = index;	
 			}else if(s.contains("--common-words=")){
@@ -136,7 +137,7 @@ public class Program {
 		}
 	
 		if (sens != -1) {
-			String filePath = args[vec].substring(10);
+			String filePath = args[sens].substring(12);
 			BufferedReader reader = new BufferedReader(new FileReader(filePath));
 			String line = null;
 			while ((line = reader.readLine()) != null) {
@@ -153,9 +154,11 @@ public class Program {
 			randVectorTesting = (args[rand].toLowerCase().equals("true"));
 		}
 		
+		System.out.println(slow);
 		if (slow != -1) {
 			try {
-				slow = Integer.parseInt(args[slow]);
+
+				slowResp = Integer.parseInt(args[slow].substring(7));
 			}
 			catch (NumberFormatException nfe) {
 				//keep slow at default of 500ms
