@@ -12,8 +12,13 @@ import com.gargoylesoftware.htmlunit.util.Cookie;
 
 public class Report {
 
-	List<Page> pages = new ArrayList<Page>();
+	private List<Page> pages = new ArrayList<Page>();
 	
+	
+	public List<Page> getPages() {
+		return pages;
+	}
+
 	/**
 	 * @param page : Just add the HtmlPage you found
 	 * @param type : Just add a String of how you found the page. Ex.: "guessed"
@@ -118,15 +123,38 @@ public class Report {
 	{
 		printStats();
 		System.out.println();
-		
+		List<String> exploredUrl = new ArrayList<String>();
 		for (Page page : pages) {
-			System.out.printf("%s (%s)\n",page.getURL(),page.getType());
-			printForms(page);
-			printLinks(page);
-			printInputs(page);
-			printCookies(page);
-			System.out.println();
+			if(!isExplored(page, exploredUrl))
+			{
+				exploredUrl.add(removeParameter(page.getURL()));
+				System.out.printf("%s (%s)\n",removeParameter(page.getURL()),page.getType());
+				printForms(page);
+				printLinks(page);
+				printInputs(page);
+				printCookies(page);
+				System.out.println();
+			}
 		}
+	}
+	
+	private boolean isExplored(Page page, List<String> exploredUrl)
+	{
+		boolean status = false;
+		for (String url : exploredUrl) {
+			if(url.equalsIgnoreCase(removeParameter(page.getURL())))
+			{
+				status = true;
+				break;
+			}
+		}
+		return status;
+	}
+	
+	private String removeParameter(String url)
+	{
+		String[] splitedUrl  = url.split("\\?");
+		return splitedUrl[0];
 	}
 	
 	private void printStats()
@@ -137,16 +165,20 @@ public class Report {
 		Integer numberForms = 0;
 		Integer numberInputs = 0;
 		Integer numberCookies = 0;
-		
+		List<String> exploredUrl = new ArrayList<String>();
 		for (Page page : pages) {
-			if(page.getType().equalsIgnoreCase("guessed"))
-				numberGuessed++;
-			else
-				numberCrawled++;
-			numberLinks += page.getLinks().size();
-			numberForms += page.getForms().size();
-			numberInputs += page.getInputs().size();
-			numberCookies += page.getActualCookies().size();
+			if(!isExplored(page, exploredUrl))
+			{
+				exploredUrl.add(removeParameter(page.getURL()));
+				if(page.getType().equalsIgnoreCase("guessed"))
+					numberGuessed++;
+				else
+					numberCrawled++;
+				numberLinks += page.getLinks().size();
+				numberForms += page.getForms().size();
+				numberInputs += page.getInputs().size();
+				numberCookies += page.getActualCookies().size();
+			}
 		}
 		
 		System.out.printf("Crawled %d pages \n",numberCrawled);
