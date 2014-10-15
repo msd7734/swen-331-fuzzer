@@ -209,7 +209,20 @@ public class Report {
 		System.out.printf("Found %d cookies \n",numberCookies);
 		
 		for (TestIssue type : TestIssue.values()) {
-			System.out.printf("%d pages found with %s issue\n",pagesByIssueType(pages, type).size(),type.getType());
+			List<Page> issuePage = pagesByIssueType(pages, type);
+			if(issuePage.size() == 0)
+			{
+				System.out.printf("Found %s on %d pages\n",type.getType(),0);
+				continue;
+			}
+			else
+			{
+				System.out.printf("Found %s on pages:\n",type.getType());
+				for (Page page : issuePage) {
+					System.out.printf("\t%s\n",page.getURL());
+				}
+			}
+			
 		}
 		
 		System.out.printf("Successfully guessed %d urls \n",numberGuessed);
