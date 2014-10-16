@@ -207,7 +207,6 @@ public class Fuzzer {
 			allFormPages.add(randomItem);
 		}
 		
-		System.out.println("Number of pages with forms = " + allFormPages.size());
 		//run vectors on allFormPages
 		for(String url : allFormPages){
 			final HtmlPage testPage = webClient.getPage(url);
@@ -217,7 +216,7 @@ public class Fuzzer {
 			
 			List<HtmlForm> allForms = testPage.getForms();
 			for(HtmlForm form : allForms){
-				//somehow get all the text areas - Possibly like this? 
+				//get all the text areas
 				List<HtmlElement> inputs = form.getElementsByTagName("input");
 				ArrayList<HtmlInput> htmlInput = new ArrayList<HtmlInput>();
 				for(DomElement i : inputs){
@@ -241,7 +240,6 @@ public class Fuzzer {
 								}
 							}else{
 								hInput.setValueAttribute(vector);
-								System.out.println(hInput.getValueAttribute());
 							}
 							
 						}
@@ -253,7 +251,6 @@ public class Fuzzer {
 					}
 					//for each text area set the input to the vector string
 					submit.click();
-					
 				}
 			}
 			//Analyze the page
@@ -274,10 +271,9 @@ public class Fuzzer {
 		final ArrayList<String> collectedAlerts = new ArrayList<String>();
 		
 	    webClient.setAlertHandler(new CollectingAlertHandler(collectedAlerts));
-	    for(String s : collectedAlerts){
-			System.out.println(s);
-		}
 	    final HtmlPage testPage = webClient.getPage(url);
+
+	    
 	    WebResponse response = testPage.getWebResponse();
 	    List<DomElement> bodyElement = testPage.getElementsByTagName("body");
 	    String rawText = "";
@@ -285,24 +281,13 @@ public class Fuzzer {
 		
 		if (response.getStatusCode() != 200)
 		{
-			
 			report.setPageIssue(url, TestIssue.ErrorStatus);
 		}
-		if(collectedAlerts.contains("XXS")){
-			report.setPageIssue(url, TestIssue.Sanitization);
-		}
-		if(response.getLoadTime() > slowTest){
-			System.out.println(slowTest);
-			System.out.println(response.getLoadTime());
-			System.out.println("SLOWWWWWWW");
-			report.setPageIssue(url, TestIssue.Slow);
-		}
-		
 		//sensitive 
 		
 		boolean sensitiveTest = false;
-	    
-	    for(DomElement d : bodyElement){
+			    
+		for(DomElement d : bodyElement){
 	    	rawText += d.getTextContent();
 	    }
 		for(String sens : sensitive){
@@ -314,6 +299,16 @@ public class Fuzzer {
 		if(sensitiveTest){
 			report.setPageIssue(url, TestIssue.SensitiveData);
 		}
+		
+		if(collectedAlerts.contains("XXS") || rawText.contains("TABLE_SCHEMA") ){
+			report.setPageIssue(url, TestIssue.Sanitization);
+		}
+		if(response.getLoadTime() > slowTest){
+			report.setPageIssue(url, TestIssue.Slow);
+		}
+		
+		
+	    
 		options.setJavaScriptEnabled(false);
 	}
 	

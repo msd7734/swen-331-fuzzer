@@ -73,7 +73,6 @@ public class Program {
 		List<String> options = Arrays.asList(args).subList(2, args.length);
 		for(String s : options)
 		{
-			System.out.println(s);
 			if(s.contains("--custom-auth=")){
 				custAuth = index;	
 			}else if(s.contains("--common-words=")){
@@ -154,7 +153,6 @@ public class Program {
 			randVectorTesting = (args[rand].toLowerCase().equals("true"));
 		}
 		
-		System.out.println(slow);
 		if (slow != -1) {
 			try {
 
@@ -165,15 +163,6 @@ public class Program {
 			}
 		}
 		
-		//Args debug block
-		/*
-		System.out.println("Debug: Your Fuzzer can successfully be created!");
-		System.out.println(args[0] + "\n" + args[1]);
-		if (custAuth > 0)
-			System.out.println(args[custAuth]);
-		if (comWords > 0)
-			System.out.println(args[comWords]);
-		*/ 
 		
 		Fuzzer fuzzer = new Fuzzer(url, commonWords);
 		if (customAuth != null)
