@@ -210,9 +210,6 @@ public class Fuzzer {
 		//run vectors on allFormPages
 		for(String url : allFormPages){
 			final HtmlPage testPage = webClient.getPage(url);
-			Cookie sec = new Cookie("127.0.0.1", "security", "low");
-			cookieManager.removeCookie(cookieManager.getCookie("security"));
-			cookieManager.addCookie(sec);
 			
 			List<HtmlForm> allForms = testPage.getForms();
 			for(HtmlForm form : allForms){
@@ -375,6 +372,12 @@ public class Fuzzer {
 	 */
 	public void setRandom(){
 		this.random = true;
+	}
+	
+	public void replaceCookie(String domain, String name, String val){
+		Cookie newCook = new Cookie(domain, name, val);
+		cookieManager.removeCookie(cookieManager.getCookie(name));
+		cookieManager.addCookie(newCook);
 	}
 	
 	/*

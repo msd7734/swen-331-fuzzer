@@ -150,7 +150,7 @@ public class Program {
 		}
 		
 		if (rand != -1) {
-			randVectorTesting = (args[rand].toLowerCase().equals("true"));
+			randVectorTesting = (args[rand].substring(9).toLowerCase().equals("true"));		
 		}
 		
 		if (slow != -1) {
